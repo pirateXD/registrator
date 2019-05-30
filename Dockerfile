@@ -1,18 +1,12 @@
-FROM golang:1.9.4-alpine3.7 AS builder
-WORKDIR /go/src/github.com/gliderlabs/registrator/
-COPY . .
-RUN \
-	apk add --no-cache curl git \
-	&& curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh \
-	&& dep ensure -vendor-only \
-	&& CGO_ENABLED=0 GOOS=linux go build \
-		-a -installsuffix cgo \
-		-ldflags "-X main.Version=$(cat VERSION)" \
-		-o bin/registrator \
-		.
-
-FROM alpine:3.7
-RUN apk add --no-cache ca-certificates
-COPY --from=builder /go/src/github.com/gliderlabs/registrator/bin/registrator /bin/registrator
-
+FROM golang:1.10-alpine3.7 as builder
+MAINTAINER YangJunhai <yangjunhai@xindong.com>
+COPY . /go/src/github.com/pirateXD/registrator
+RUN apk --no-cache add ca-certificates \
+    && go build -ldflags "-X main.Version=$(grep "^version" /go/src/github.com/pirateXD/registrator/docker_run.config | awk -F'=' '{print $2}')" \
+    -o /bin/registrator github.com/pirateXD/registrator && \
+    rm -rf /go
+FROM alpine:latest
+COPY --from=builder /bin/registrator /bin/registrator
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 ENTRYPOINT ["/bin/registrator"]
+CMD ["--help"]

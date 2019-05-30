@@ -1,0 +1,40 @@
+package: github.com/pirateXD/registrator
+import:
+  - package: github.com/cenkalti/backoff
+    version: v3.0.0
+  - package: github.com/coreos/etcd
+    version: v3.3.13
+    subpackages:
+      - clientv3
+      - etcdserver/api/v3rpc/rpctypes
+  - package: github.com/coreos/go-etcd
+    version: v2.0.0
+    subpackages:
+      - etcd
+  - package: github.com/fsouza/go-dockerclient
+    version: v1.4.1
+  - package: github.com/gliderlabs/pkg
+    subpackages:
+      - usage
+  - package: github.com/gliderlabs/registrator
+    version: master
+    subpackages:
+      - bridge
+  - package: github.com/hashicorp/consul
+    version: v1.5.1
+    subpackages:
+      - api
+  - package: github.com/hashicorp/go-cleanhttp
+    version: v0.5.1
+  - package: github.com/samuel/go-zookeeper
+    subpackages:
+      - zk
+  - package: gopkg.in/coreos/go-etcd.v0
+    version: v2.0.0
+    subpackages:
+      - etcd
+testImport:
+  - package: github.com/stretchr/testify
+    version: v1.3.0
+    subpackages:
+      - assert

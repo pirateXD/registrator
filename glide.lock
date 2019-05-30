@@ -1,0 +1,220 @@
+hash: b2a5cf221f6e8732df3006720ae5db023c84159928c664753832d251bc31dcb8
+updated: 2019-05-30T11:04:27.7185983+08:00
+imports:
+- name: github.com/armon/go-metrics
+  version: ec5e00d3c878b2a97bbe0884ef45ffd1b4f669f5
+- name: github.com/Azure/go-ansiterm
+  version: d6e3b3328b783f23731bc4d058875b0371ff8109
+  subpackages:
+  - winterm
+- name: github.com/cenkalti/backoff
+  version: 4b4cebaf850ec58f1bb1fec5bdebdf8501c2bc3f
+- name: github.com/containerd/continuity
+  version: aaeac12a7ffcd198ae25440a9dff125c2e2703a7
+  subpackages:
+  - pathdriver
+- name: github.com/coreos/etcd
+  version: 98d308426819d892e149fe45f6fd542464cb1f9d
+  subpackages:
+  - auth/authpb
+  - clientv3
+  - etcdserver/api/v3rpc/rpctypes
+  - etcdserver/etcdserverpb
+  - mvcc/mvccpb
+  - pkg/types
+- name: github.com/coreos/go-etcd
+  version: f02171fbd43c7b9b53ce8679b03235a1ef3c7b12
+  subpackages:
+  - etcd
+- name: github.com/docker/distribution
+  version: 3226863cbcba6dbc2f6c83a37b28126c934af3f8
+  subpackages:
+  - registry/api/errcode
+- name: github.com/docker/docker
+  version: 8d760280a232f98d92440539e1e8a8f66c213bdb
+  subpackages:
+  - api/types/blkiodev
+  - api/types/container
+  - api/types/filters
+  - api/types/mount
+  - api/types/network
+  - api/types/registry
+  - api/types/strslice
+  - api/types/swarm
+  - api/types/swarm/runtime
+  - api/types/versions
+  - errdefs
+  - pkg/fileutils
+  - pkg/homedir
+  - pkg/idtools
+  - pkg/ioutils
+  - pkg/longpath
+  - pkg/mount
+  - pkg/pools
+  - pkg/stdcopy
+  - pkg/system
+- name: github.com/docker/go-connections
+  version: 2a820fca5f4346badd2e3db516dd911f361eec3d
+  subpackages:
+  - nat
+- name: github.com/docker/go-units
+  version: 519db1ee28dcc9fd2474ae59fca29a810482bfb1
+- name: github.com/fsouza/go-dockerclient
+  version: c7c3d82ff59670a489886cb51194f86a50f9025c
+  subpackages:
+  - internal/archive
+  - internal/jsonmessage
+  - internal/term
+- name: github.com/gliderlabs/pkg
+  version: 36f28d47ec7aae4d25d3d2741ac5af91f7f18680
+  subpackages:
+  - usage
+- name: github.com/gliderlabs/registrator
+  version: da90d170da9dd7e1a8d9a13429d44686dc3d118f
+  subpackages:
+  - bridge
+- name: github.com/gogo/protobuf
+  version: 342cbe0a04158f6dcb03ca0079991a51a4248c02
+  subpackages:
+  - gogoproto
+  - proto
+  - protoc-gen-gogo/descriptor
+- name: github.com/golang/protobuf
+  version: 1e59b77b52bf8e4b449a57e6f79f21226d571845
+  subpackages:
+  - jsonpb
+  - proto
+  - ptypes
+  - ptypes/any
+  - ptypes/duration
+  - ptypes/timestamp
+- name: github.com/hashicorp/consul
+  version: 40cec98468b829e5cdaacb0629b3e23a028db688
+  subpackages:
+  - api
+- name: github.com/hashicorp/go-cleanhttp
+  version: eda1e5db218aad1db63ca4642c8906b26bcf2744
+- name: github.com/hashicorp/go-immutable-radix
+  version: 0146a9aba1948ded4ed290cfd3fded2c15313f63
+- name: github.com/hashicorp/go-rootcerts
+  version: 63503fb4e1eca22f9ae0f90b49c5d5538a0e87eb
+- name: github.com/hashicorp/golang-lru
+  version: 59383c442f7d7b190497e9bb8fc17a48d06cd03f
+  subpackages:
+  - simplelru
+- name: github.com/hashicorp/serf
+  version: 15cfd05de3dffb3664aa37b06e91f970b825e380
+  subpackages:
+  - coordinate
+- name: github.com/ijc/Gotty
+  version: a8b993ba6abdb0e0c12b0125c603323a71c7790c
+- name: github.com/Microsoft/go-winio
+  version: 12afdbf8b879f9ce020255d4dea63525b16518f5
+  subpackages:
+  - pkg/guid
+- name: github.com/Microsoft/hcsshim
+  version: 68b466ddec9f9ddb13301e701e23e485b38801fa
+  subpackages:
+  - osversion
+- name: github.com/miekg/dns
+  version: d16ecb693e3f8d524769fefce2192a4c92207ff9
+- name: github.com/mitchellh/go-homedir
+  version: af06845cf3004701891bf4fdb884bfe4920b3727
+- name: github.com/mitchellh/mapstructure
+  version: 3536a929edddb9a5b34bd6861dc4a9647cb459fe
+- name: github.com/opencontainers/go-digest
+  version: ac19fd6e7483ff933754af248d80be865e543d22
+- name: github.com/opencontainers/image-spec
+  version: da296dcb1e473a9b4e2d148941d7faa9ac8fea3f
+  subpackages:
+  - specs-go
+  - specs-go/v1
+- name: github.com/opencontainers/runc
+  version: 5ef781c2e7acc776b1ebee5c25c2791b3a8dc139
+  subpackages:
+  - libcontainer/user
+- name: github.com/pkg/errors
+  version: 27936f6d90f9c8e1145f11ed52ffffbfdb9e0af7
+- name: github.com/samuel/go-zookeeper
+  version: c4fab1ac1bec58281ad0667dc3f0907a9476ac47
+  subpackages:
+  - zk
+- name: github.com/sirupsen/logrus
+  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: golang.org/x/crypto
+  version: 9419663f5a44be8b34ca85f08abc5fe1be11f8a3
+  subpackages:
+  - bcrypt
+  - blowfish
+  - ed25519
+  - ed25519/internal/edwards25519
+  - ssh/terminal
+- name: golang.org/x/net
+  version: 66aacef3dd8a676686c7ae3716979581e8b03c47
+  subpackages:
+  - bpf
+  - context
+  - http2
+  - http2/hpack
+  - idna
+  - internal/iana
+  - internal/socket
+  - internal/timeseries
+  - ipv4
+  - ipv6
+  - lex/httplex
+  - trace
+- name: golang.org/x/sys
+  version: ebfc5b4631820b793c9010c87fd8fef0f39eb082
+  subpackages:
+  - unix
+  - windows
+- name: golang.org/x/text
+  version: b19bf474d317b857955b12035d2c5acb57ce8b01
+  subpackages:
+  - secure/bidirule
+  - transform
+  - unicode/bidi
+  - unicode/norm
+- name: google.golang.org/genproto
+  version: 09f6ed296fc66555a25fe4ce95173148778dfa85
+  subpackages:
+  - googleapis/rpc/status
+- name: google.golang.org/grpc
+  version: 5b3c4e850e90a4cf6a20ebd46c8b32a0a3afcb9e
+  subpackages:
+  - balancer
+  - codes
+  - connectivity
+  - credentials
+  - grpclb/grpc_lb_v1/messages
+  - grpclog
+  - health
+  - health/grpc_health_v1
+  - internal
+  - keepalive
+  - metadata
+  - naming
+  - peer
+  - resolver
+  - stats
+  - status
+  - tap
+  - transport
+- name: gopkg.in/coreos/go-etcd.v0
+  version: f02171fbd43c7b9b53ce8679b03235a1ef3c7b12
+  subpackages:
+  - etcd
+testImports:
+- name: github.com/davecgh/go-spew
+  version: d8f796af33cc11cb798c1aaeb27a4ebc5099927d
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: 5d4384ee4fb2527b0a1256a821ebfc92f91efefc
+  subpackages:
+  - difflib
+- name: github.com/stretchr/testify
+  version: ffdc059bfe9ce6a4e144ba849dbedead332c6053
+  subpackages:
+  - assert

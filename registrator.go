@@ -12,7 +12,7 @@ import (
 
 	dockerapi "github.com/fsouza/go-dockerclient"
 	"github.com/gliderlabs/pkg/usage"
-	"github.com/gliderlabs/registrator/bridge"
+	"github.com/pirateXD/registrator/bridge"
 )
 
 var Version string
@@ -102,7 +102,7 @@ func main() {
 		assert(errors.New("-deregister must be \"always\" or \"on-success\""))
 	}
 
-	b, err := bridge.New(docker, flag.Arg(0), bridge.Config{
+	bo, err := bridge.New(docker, flag.Arg(0), bridge.Config{
 		HostIp:          *hostIp,
 		Internal:        *internal,
 		Explicit:        *explicit,
@@ -115,6 +115,8 @@ func main() {
 	})
 
 	assert(err)
+
+	b := &bridge.XBridge{Bridge: bo}
 
 	attempt := 0
 	for *retryAttempts == -1 || attempt <= *retryAttempts {

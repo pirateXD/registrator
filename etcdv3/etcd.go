@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/etcdserver/api/v3rpc/rpctypes"
-	"github.com/gliderlabs/registrator/bridge"
+	"github.com/pirateXD/registrator/bridge"
 	"io/ioutil"
 	"log"
 	"net"
@@ -137,6 +137,10 @@ func (r *EtcdAdapter) Deregister(service *bridge.Service) error {
 func (r *EtcdAdapter) Refresh(service *bridge.Service) error {
 
 	r.syncEtcdCluster()
+	if r.leaseID <= 0 {
+		log.Println("etcd: failed to refresh service:", "etcd leaseID:", r.leaseID)
+		return nil
+	}
 	if _, err := r.client.KeepAliveOnce(context.TODO(), r.leaseID); err != nil {
 		log.Println("etcd: failed to refresh service:", err)
 		return err

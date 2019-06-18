@@ -31,6 +31,7 @@ var deregister = flag.String("deregister", "always", "Deregister exited services
 var retryAttempts = flag.Int("retry-attempts", 0, "Max retry attempts to establish a connection with the backend. Use -1 for infinite retries")
 var retryInterval = flag.Int("retry-interval", 2000, "Interval (in millisecond) between retry-attempts.")
 var cleanup = flag.Bool("cleanup", false, "Remove dangling services")
+var eventChannelLen = flag.Int("event-channel-len", 1024, "Docker events channel len.")
 
 func getopt(name, def string) string {
 	if env := os.Getenv(name); env != "" {
@@ -86,6 +87,10 @@ func main() {
 		assert(errors.New("-retry-interval must be greater than 0"))
 	}
 
+	if *eventChannelLen <= 1 {
+		assert(errors.New("-event-channel-len must be greater than 1"))
+	}
+
 	dockerHost := os.Getenv("DOCKER_HOST")
 	if dockerHost == "" {
 		if runtime.GOOS != "windows" {
@@ -136,8 +141,9 @@ func main() {
 	}
 
 	// Start event listener before listing containers to avoid missing anything
-	events := make(chan *dockerapi.APIEvents)
+	events := make(chan *dockerapi.APIEvents, *eventChannelLen)
 	assert(docker.AddEventListener(events))
+	log.Println("Docker events channel len: ", *eventChannelLen)
 	log.Println("Listening for Docker events ...")
 
 	b.Sync(false)

@@ -11,4 +11,5 @@ docker run -d  --name=$id  --net=host  --volume=/var/run/docker.sock:/tmp/docker
 -useIpFromLabel="exposeIP" \
 -ttl=30 \
 -ttl-refresh=10  \
+-event-channel-len=1024 \
 etcd://qa.haidao:2379/services

@@ -2,6 +2,7 @@
 
 ip=$1
 tag=$(grep "^version" docker_run.config | awk -F'=' '{print $2}')
+etcdHosts=$(grep "^etcd" docker_run.config | awk -F'=' '{print $2}')
 id=myRegistrator
 dockerRun=qa.haidao:5000/registrator:${tag}
 
@@ -12,4 +13,4 @@ docker run -d  --name=$id  --net=host  --volume=/var/run/docker.sock:/tmp/docker
 -ttl=60 \
 -ttl-refresh=30  \
 -event-channel-len=1024 \
-etcd://qa.haidao:2379/services
+etcd://${etcdHosts}/services

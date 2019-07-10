@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ip=172.26.148.189
+ip=$1
 tag=$(grep "^version" docker_run.config | awk -F'=' '{print $2}')
 id=myRegistrator
 dockerRun=qa.haidao:5000/registrator:${tag}

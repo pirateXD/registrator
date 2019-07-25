@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -39,20 +40,31 @@ func newClient(host []string) *clientv3.Client {
 
 func (f *Factory) New(uri *url.URL) bridge.RegistryAdapter {
 	urls := make([]string, 0)
+
 	if uri.Host != "" {
 		urls = append(urls, "http://"+uri.Host)
+
+		//使用url fragment字段附带信息，没有更改Factory接口
+		configUrls := strings.Split(uri.Fragment, "#")
+		for _, configUrl := range configUrls {
+			urls = append(urls, "http://"+configUrl)
+		}
 	} else {
 		urls = append(urls, "http://127.0.0.1:2379")
 	}
 
-	res, err := http.Get(urls[0] + "/version")
-	if err != nil {
-		log.Fatal("etcd: error retrieving version", err)
-	}
+	log.Printf("etcd urls:%v", urls)
 
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-	log.Printf("etcd version response : %v", body)
+	for _, url := range urls {
+		res, err := http.Get(url + "/version")
+		if err != nil {
+			log.Fatal("etcd: error retrieving version", err)
+		}
+
+		defer res.Body.Close()
+		body, _ := ioutil.ReadAll(res.Body)
+		log.Printf("etcd url:%v version response : %v", url, body)
+	}
 
 	return &EtcdAdapter{client: newClient(urls), path: uri.Path}
 }

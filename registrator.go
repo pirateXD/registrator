@@ -209,10 +209,12 @@ func checkEtcdClusterHealth(b *bridge.XBridge) {
 					break
 				}
 
+				log.Printf("ping error (%v/%v)", attempt, *retryAttempts)
 				if err != nil && attempt == *retryAttempts {
 					assert(err)
 				}
 				attempt++
+				time.Sleep(time.Duration(*retryInterval) * time.Millisecond)
 			}
 			time.Sleep(time.Duration(*retryInterval) * time.Millisecond)
 		}

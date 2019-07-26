@@ -7,7 +7,7 @@ id=myRegistrator
 dockerRun=qa.haidao:5000/registrator:${tag}
 
 docker stop $id && docker rm $id && echo "stop and remove $id"
-docker run -d  --name=$id  --net=host  --restart on-failure --volume=/var/run/docker.sock:/tmp/docker.sock  $dockerRun  \
+docker run -d  --name=$id  --net=host  -v /etc/localtime:/etc/localtime --restart on-failure --volume=/var/run/docker.sock:/tmp/docker.sock  $dockerRun  \
 -ip="$ip" \
 -useIpFromLabel="exposeIP" \
 -ttl=60 \
@@ -15,4 +15,4 @@ docker run -d  --name=$id  --net=host  --restart on-failure --volume=/var/run/do
 -event-channel-len=1024 \
 -retry-attempts=5 \
 -retry-interval=2000 \
-etcd://${etcdHosts}
+etcd://${etcdHosts}/services

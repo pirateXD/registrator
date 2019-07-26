@@ -47,7 +47,9 @@ func (f *Factory) New(uri *url.URL) bridge.RegistryAdapter {
 		//使用url fragment字段附带信息，没有更改Factory接口
 		configUrls := strings.Split(uri.Fragment, "#")
 		for _, configUrl := range configUrls {
-			urls = append(urls, "http://"+configUrl)
+			if configUrl != "" {
+				urls = append(urls, "http://"+configUrl)
+			}
 		}
 	} else {
 		urls = append(urls, "http://127.0.0.1:2379")

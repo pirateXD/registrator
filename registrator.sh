@@ -13,4 +13,6 @@ docker run -d  --name=$id  --net=host  --restart on-failure --volume=/var/run/do
 -ttl=60 \
 -ttl-refresh=30  \
 -event-channel-len=1024 \
+-retry-attempts=5 \
+-retry-interval=2000 \
 etcd://${etcdHosts}

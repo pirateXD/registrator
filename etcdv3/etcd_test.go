@@ -33,10 +33,19 @@ func Test_newClient(t *testing.T) {
 
 }
 
-func Test_EtcdCluster(t *testing.T) {
+func Test_EtcdClusterSingle(t *testing.T) {
 	etcdFactory := new(Factory)
-	//uri, _ := url.Parse("etcd://qa.haidao:2379/services#qa2.haidao:2379#qa3.haidao:2379")
-	uri, _ := url.Parse("etcd://qa2.haidao:2379/services#qa3.haidao:2379")
+	uri, _ := url.Parse("etcd://qa2.haidao:2379/services")
+	adapter := etcdFactory.New(uri)
+
+	if err := adapter.Ping(); err != nil {
+		t.Error("ping error", err)
+	}
+}
+
+func Test_EtcdClusterMulti(t *testing.T) {
+	etcdFactory := new(Factory)
+	uri, _ := url.Parse("etcd://qa2.haidao:2379/services#qa.haidao:2379")
 	adapter := etcdFactory.New(uri)
 
 	if err := adapter.Ping(); err != nil {

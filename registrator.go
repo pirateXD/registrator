@@ -182,8 +182,6 @@ func main() {
 		}()
 	}
 
-	checkEtcdClusterHealth(b)
-
 	// Process Docker events
 	for msg := range events {
 		log.Println(">>>>>> event ", msg)
@@ -197,26 +195,4 @@ func main() {
 
 	close(quit)
 	log.Fatal("Docker event loop closed") // todo: reconnect?
-}
-
-func checkEtcdClusterHealth(b *bridge.XBridge) {
-	go func() {
-		for {
-			attempt := 0
-			for *retryAttempts == -1 || attempt <= *retryAttempts {
-				err := b.Ping()
-				if err == nil {
-					break
-				}
-
-				log.Printf("ping error (%v/%v)", attempt, *retryAttempts)
-				if err != nil && attempt == *retryAttempts {
-					assert(err)
-				}
-				attempt++
-				time.Sleep(time.Duration(*retryInterval) * time.Millisecond)
-			}
-			time.Sleep(time.Duration(*retryInterval) * time.Millisecond)
-		}
-	}()
 }

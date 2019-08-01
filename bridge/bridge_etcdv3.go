@@ -23,6 +23,15 @@ func (b *XBridge) Refresh() {
 	err := b.registry.Refresh(nil)
 	if err != nil {
 		log.Println("refresh failed:", err)
+		b.SetLastErrCode(err)
+		return
 	}
+
+	if b.GetLastErrCode() != nil && err == nil {
+		log.Println("refresh trigger sync.")
+		b.SetLastErrCode(nil)
+		b.Sync(true)
+	}
+
 	log.Println("refreshed:all")
 }

@@ -81,6 +81,36 @@ func (r *EtcdAdapter) syncEtcdCluster() {
 	}
 }
 
+func (r *EtcdAdapter) GrantLease(ttl int) error {
+	if resp, err := r.client.Grant(context.TODO(), int64(ttl)); err != nil {
+		log.Println("etcd: failed to GrantLease:", err)
+		return err
+	} else {
+		r.leaseID = resp.ID
+		return nil
+	}
+}
+
+func (r *EtcdAdapter) KeepAliveOnce(ttl int) error {
+	if r.leaseID <= 0 {
+		log.Println("EtcdAdapter KeepAliveOnce:", "etcd leaseID:", r.leaseID)
+		if err := r.GrantLease(ttl); err != nil {
+			return err
+		}
+	} else {
+		_, err := r.client.KeepAliveOnce(context.TODO(), r.leaseID)
+		if err == rpctypes.ErrLeaseNotFound {
+			log.Println("EtcdAdapter KeepAliveOnce: ErrLeaseNotFound")
+			if err := r.GrantLease(ttl); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	}
+	return nil
+}
+
 func (r *EtcdAdapter) Register(service *bridge.Service) error {
 	r.syncEtcdCluster()
 
@@ -88,30 +118,14 @@ func (r *EtcdAdapter) Register(service *bridge.Service) error {
 	port := strconv.Itoa(service.Port)
 	addr := net.JoinHostPort(service.IP, port)
 
-	grantLease := func() error {
-		if resp, err := r.client.Grant(context.TODO(), int64(service.TTL)); err != nil {
-			log.Println("etcd: failed to register service:", err)
-			return err
-		} else {
-			r.leaseID = resp.ID
-			return nil
-		}
-	}
-
-	if r.leaseID <= 0 {
-		if err := grantLease(); err != nil {
-			return err
-		}
-	} else {
-		if _, err := r.client.KeepAliveOnce(context.TODO(), r.leaseID); err == rpctypes.ErrLeaseNotFound {
-			if err := grantLease(); err != nil {
-				return err
-			}
-		}
+	err := r.KeepAliveOnce(service.TTL)
+	if err != nil {
+		log.Println("etcd: failed to register service KeepAliveOnce:", err)
+		return err
 	}
 
 	if _, err := r.client.Put(context.TODO(), path, addr, clientv3.WithLease(r.leaseID)); err != nil {
-		log.Println("etcd: failed to register service:", err)
+		log.Println("etcd: failed to register service put:", err)
 		return err
 	}
 	return nil
@@ -135,16 +149,13 @@ func (r *EtcdAdapter) Deregister(service *bridge.Service) error {
 }
 
 func (r *EtcdAdapter) Refresh(service *bridge.Service) error {
-
 	r.syncEtcdCluster()
-	if r.leaseID <= 0 {
-		log.Println("etcd: failed to refresh service:", "etcd leaseID:", r.leaseID)
-		return nil
-	}
-	if _, err := r.client.KeepAliveOnce(context.TODO(), r.leaseID); err != nil {
-		log.Println("etcd: failed to refresh service:", err)
+	err := r.KeepAliveOnce(service.TTL)
+	if err != nil {
+		log.Println("etcd: failed to refresh service KeepAliveOnce:", err)
 		return err
 	}
+
 	return nil
 }
 

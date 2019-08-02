@@ -13,6 +13,4 @@ docker run -d  --name=$id  --net=host  -v /etc/localtime:/etc/localtime --restar
 -ttl=60 \
 -ttl-refresh=30  \
 -event-channel-len=1024 \
--retry-attempts=5 \
--retry-interval=2000 \
-etcd://${etcdHosts}/services
+etcd://${etcdHosts}

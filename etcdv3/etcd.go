@@ -55,7 +55,12 @@ func (f *Factory) New(uri *url.URL) bridge.RegistryAdapter {
 	body, _ := ioutil.ReadAll(res.Body)
 	log.Printf("etcd version response : %v", body)
 
-	return &EtcdAdapter{client: newClient(urls), path: uri.Path}
+	r := &EtcdAdapter{client: newClient(urls), path: uri.Path}
+	err = r.GrantLease(vars.ConfigTTL)
+	if err != nil {
+		log.Fatal("etcd:  New EtcdAdapter  GrantLease error:", err)
+	}
+	return r
 }
 
 type EtcdAdapter struct {

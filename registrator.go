@@ -160,7 +160,8 @@ func main() {
 			for {
 				select {
 				case <-ticker.C:
-					b.Refresh()
+					err := b.Refresh()
+					b.SyncDockerList(err)
 				case <-quit:
 					ticker.Stop()
 					return

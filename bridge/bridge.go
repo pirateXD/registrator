@@ -24,7 +24,6 @@ type Bridge struct {
 	services       map[string][]*Service
 	deadContainers map[string]*DeadContainer
 	config         Config
-	lastErrCode    error
 }
 
 func New(docker *dockerapi.Client, adapterUri string, config Config) (*Bridge, error) {
@@ -63,19 +62,6 @@ func (b *Bridge) Remove(containerId string) {
 
 func (b *Bridge) RemoveOnExit(containerId string) {
 	b.remove(containerId, b.shouldRemove(containerId))
-}
-
-func (b *Bridge) SetLastErrCode(err error) {
-	b.lastErrCode = err
-	if err != nil {
-		log.Println("bridge set errcode: ", err)
-	} else {
-		log.Println("bridge clear errcode: ")
-	}
-}
-
-func (b *Bridge) GetLastErrCode() error {
-	return b.lastErrCode
 }
 
 func (b *Bridge) Refresh() {
@@ -125,7 +111,6 @@ func (b *Bridge) Sync(quiet bool) {
 				err := b.registry.Register(service)
 				if err != nil {
 					log.Println("sync register failed:", service, err)
-					b.SetLastErrCode(err)
 				}
 			}
 		}
@@ -188,7 +173,6 @@ func (b *Bridge) Sync(quiet bool) {
 			err := b.registry.Deregister(extService)
 			if err != nil {
 				log.Println("sync deregister failed:", extService.ID, err)
-				b.SetLastErrCode(err)
 				continue
 			}
 			log.Println(extService.ID, "removed")
@@ -255,7 +239,6 @@ func (b *Bridge) add(containerId string, quiet bool) {
 		err := b.registry.Register(service)
 		if err != nil {
 			log.Println("add register failed:", service, err)
-			b.SetLastErrCode(err)
 			continue
 		}
 		b.services[container.ID] = append(b.services[container.ID], service)
@@ -382,7 +365,6 @@ func (b *Bridge) remove(containerId string, deregister bool) {
 				err := b.registry.Deregister(service)
 				if err != nil {
 					log.Println("remove deregister failed:", service.ID, err)
-					b.SetLastErrCode(err)
 					continue
 				}
 				log.Println("removed:", containerId[:12], service.ID)

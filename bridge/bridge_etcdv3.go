@@ -1,6 +1,7 @@
 package bridge
 
 import (
+	"github.com/pirateXD/registrator/vars"
 	"log"
 )
 
@@ -22,14 +23,14 @@ func (b *XBridge) Refresh() {
 	//etcd v3 需要特殊处理
 	err := b.registry.Refresh(nil)
 	if err != nil {
-		log.Println("refresh failed:", err)
-		b.SetLastErrCode(err)
+		log.Println("refresh failed err:", err)
 		return
 	}
 
-	if b.GetLastErrCode() != nil && err == nil {
+	//如果之前发生过错误(Register、Deregister、Refresh)， 并且租约正常，刷新Docker list
+	if vars.GetLastErrCode() != nil && err == nil {
 		log.Println("refresh trigger sync.")
-		b.SetLastErrCode(nil)
+		vars.SetLastErrCode(nil)
 		b.Sync(true)
 	}
 

@@ -87,27 +87,23 @@ func (r *EtcdAdapter) GrantLease(ttl int) error {
 		log.Println("etcd: failed to GrantLease:", err)
 		return err
 	} else {
+		log.Println("GrantLease success old leaseId:", r.leaseID, " new leaseId:", resp.ID)
 		r.leaseID = resp.ID
 		return nil
 	}
 }
 
-func (r *EtcdAdapter) KeepAliveOnce(ttl int) error {
+func (r *EtcdAdapter) KeepAliveOnce() error {
 	if r.leaseID <= 0 {
-		log.Println("EtcdAdapter KeepAliveOnce:", "etcd leaseID:", r.leaseID)
-		if err := r.GrantLease(ttl); err != nil {
-			return err
-		}
+		log.Println("EtcdAdapter KeepAliveOnce etcd leaseID:", r.leaseID)
+		return rpctypes.ErrLeaseNotFound
 	} else {
+		//获得etcd租约剩余时间
+		//timeliveResp, _ := r.client.TimeToLive(context.TODO(), r.leaseID)
+		//log.Println("EtcdAdapter KeepAliveOnce timeliveResp.TTL:", timeliveResp.TTL, "timeliveResp.GrantedTTL", timeliveResp.GrantedTTL)
+
 		_, err := r.client.KeepAliveOnce(context.TODO(), r.leaseID)
-		if err == rpctypes.ErrLeaseNotFound {
-			log.Println("EtcdAdapter KeepAliveOnce: ErrLeaseNotFound")
-			if err := r.GrantLease(ttl); err != nil {
-				return err
-			}
-		} else {
-			return err
-		}
+		return err
 	}
 	return nil
 }
@@ -119,14 +115,18 @@ func (r *EtcdAdapter) Register(service *bridge.Service) error {
 	port := strconv.Itoa(service.Port)
 	addr := net.JoinHostPort(service.IP, port)
 
-	err := r.KeepAliveOnce(service.TTL)
+	//租约过期不处理，下次refresh 会刷新docker list.
+	//如果创建新租约，新的servcie会registrer成功，但是已经过期的service不会更新，会信息丢失.
+	err := r.KeepAliveOnce()
 	if err != nil {
 		log.Println("etcd: failed to register service KeepAliveOnce:", err)
+		vars.SetLastErrCode(err)
 		return err
 	}
 
 	if _, err := r.client.Put(context.TODO(), path, addr, clientv3.WithLease(r.leaseID)); err != nil {
 		log.Println("etcd: failed to register service put:", err)
+		vars.SetLastErrCode(err)
 		return err
 	}
 	return nil
@@ -145,19 +145,24 @@ func (r *EtcdAdapter) Deregister(service *bridge.Service) error {
 	_, err = r.client.Delete(context.TODO(), path)
 	if err != nil {
 		log.Println("etcd: failed to deregister service:", err)
+		vars.SetLastErrCode(err)
 	}
 	return err
 }
 
 func (r *EtcdAdapter) Refresh(service *bridge.Service) error {
 	r.syncEtcdCluster()
-
-	ttl := vars.ConfigTTL
-	if service != nil {
-		ttl = service.TTL
+	err := r.KeepAliveOnce()
+	if err != nil {
+		vars.SetLastErrCode(err)
 	}
 
-	err := r.KeepAliveOnce(ttl)
+	if err == rpctypes.ErrLeaseNotFound {
+		//如果租约失效, 重新获得租约
+		log.Println("EtcdAdapter KeepAliveOnce: ErrLeaseNotFound  do GrantLease")
+		err = r.GrantLease(vars.ConfigTTL)
+	}
+
 	if err != nil {
 		log.Println("etcd: failed to refresh service KeepAliveOnce:", err)
 		return err

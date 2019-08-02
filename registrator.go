@@ -13,6 +13,7 @@ import (
 	dockerapi "github.com/fsouza/go-dockerclient"
 	"github.com/gliderlabs/pkg/usage"
 	"github.com/pirateXD/registrator/bridge"
+	"github.com/pirateXD/registrator/vars"
 )
 
 var Version string
@@ -99,6 +100,8 @@ func main() {
 			os.Setenv("DOCKER_HOST", "npipe:////./pipe/docker_engine")
 		}
 	}
+
+	vars.InitConfigTTL(*refreshTtl)
 
 	docker, err := dockerapi.NewClientFromEnv()
 	assert(err)
